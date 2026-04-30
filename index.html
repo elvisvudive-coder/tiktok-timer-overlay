@@ -1,85 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Live Timer</title>
-  <style>
-    body {
-      margin: 0;
-      background: transparent;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-    }
-
-    #timer {
-      font-size: 80px;
-      font-weight: bold;
-    }
-
-    #donor {
-      font-size: 30px;
-      margin-top: 10px;
-    }
-
-    .flash {
-      animation: flash 0.5s;
-    }
-
-    @keyframes flash {
-      0% { color: yellow; }
-      100% { color: white; }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bluosh Gift Timer</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
+
 <body>
+  <div class="container">
 
-<div id="timer">01:00:00</div>
-<div id="donor">Send Gift to keep me live...</div>
+    <div class="card">
+      <div id="timer">01:00:00</div>
+      <div id="donor">Waiting for donations...</div>
+    </div>
 
-<script>
-  let time = 3600; 
+  </div>
 
-function formatTime(seconds) {
-  let hours = Math.floor(seconds / 3600);
-  let minutes = Math.floor((seconds % 3600) / 60);
-  let secs = seconds % 60;
-
-  return (
-    String(hours).padStart(2, "0") + ":" +
-    String(minutes).padStart(2, "0") + ":" +
-    String(secs).padStart(2, "0")
-  );
-}
-
-// countdown
-let interval = setInterval(() => {
-  if (time >= 0) {
-    document.getElementById("timer").innerText = formatTime(time);
-    time--;
-  } else {
-    clearInterval(interval);
-  }
-}, 1000);
-
-
-// 🔥 IMPORTANT: dynamic WebSocket URL
-const ws = new WebSocket(
-  (location.protocol === "https:" ? "wss://" : "ws://") + location.host
-);
-
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-
-  time += data.seconds;
-
-  const timerEl = document.getElementById("timer");
-  timerEl.classList.add("flash");
-  setTimeout(() => timerEl.classList.remove("flash"), 500);
-
-  document.getElementById("donor").innerText =
-    `${data.name} donated KES ${data.amount}`;
-};
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
