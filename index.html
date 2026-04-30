@@ -33,19 +33,34 @@
 </head>
 <body>
 
-<div id="timer">60</div>
+<div id="timer">01:00:00</div>
 <div id="donor">Waiting for donations...</div>
 
 <script>
-let time = 60;
+  let time = 3600; 
+
+function formatTime(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  let minutes = Math.floor((seconds % 3600) / 60);
+  let secs = seconds % 60;
+
+  return (
+    String(hours).padStart(2, "0") + ":" +
+    String(minutes).padStart(2, "0") + ":" +
+    String(secs).padStart(2, "0")
+  );
+}
 
 // countdown
-setInterval(() => {
-  if (time > 0) {
+let interval = setInterval(() => {
+  if (time >= 0) {
+    document.getElementById("timer").innerText = formatTime(time);
     time--;
-    document.getElementById("timer").innerText = time;
+  } else {
+    clearInterval(interval);
   }
 }, 1000);
+
 
 // 🔥 IMPORTANT: dynamic WebSocket URL
 const ws = new WebSocket(
