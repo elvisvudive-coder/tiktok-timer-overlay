@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Timer</title>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+
+    #timer {
+      font-size: 80px;
+      font-weight: bold;
+    }
+
+    #donor {
+      font-size: 30px;
+      margin-top: 10px;
+    }
+
+    .flash {
+      animation: flash 0.5s;
+    }
+
+    @keyframes flash {
+      0% { color: yellow; }
+      100% { color: white; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="timer">60</div>
+<div id="donor">Waiting for donations...</div>
+
+<script>
+let time = 60;
+
+// countdown
+setInterval(() => {
+  if (time > 0) {
+    time--;
+    document.getElementById("timer").innerText = time;
+  }
+}, 1000);
+
+// 🔥 IMPORTANT: dynamic WebSocket URL
+const ws = new WebSocket(
+  (location.protocol === "https:" ? "wss://" : "ws://") + location.host
+);
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+
+  time += data.seconds;
+
+  const timerEl = document.getElementById("timer");
+  timerEl.classList.add("flash");
+  setTimeout(() => timerEl.classList.remove("flash"), 500);
+
+  document.getElementById("donor").innerText =
+    `${data.name} donated KES ${data.amount}`;
+};
+</script>
+
+</body>
+</html>
